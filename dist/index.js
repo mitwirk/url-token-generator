@@ -26,19 +26,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.decryptUrlToken = exports.generateUrlToken = void 0;
 const jsencrypt_1 = __importDefault(require("jsencrypt"));
 const chunk_1 = require("./util/chunk");
 const queryString = __importStar(require("query-string"));
+const MAX_CHUNK_BYTE = 200;
 function generateUrlToken(queryString, publicKeyFromPem) {
     const jsencrypt = new jsencrypt_1.default();
     jsencrypt.setPublicKey(publicKeyFromPem);
-    const base64EncodedQueryString = btoa(queryString);
+    const base64EncodedQueryString = Buffer.from(queryString, "utf-8").toString("base64");
     let token = "token=";
-    for (const s of (0, chunk_1.chunk)(base64EncodedQueryString, 200)) {
+    for (const s of (0, chunk_1.chunkIterator)(base64EncodedQueryString, MAX_CHUNK_BYTE)) {
         token += `${jsencrypt.encrypt(s)},`;
     }
     return token.slice(0, -1);
 }
+exports.generateUrlToken = generateUrlToken;
 function decryptUrlToken(tokenFromUrl, privateKeyFromPem) {
     const parsedToken = queryString.parse(tokenFromUrl, {
         arrayFormat: "comma",
@@ -57,9 +60,9 @@ function decryptUrlToken(tokenFromUrl, privateKeyFromPem) {
                 throw new Error(`Decryption of chunk failed, returned ${false} for chunk ${chunk}`);
             }
         }
-        const decodedToken = atob(decryptedToken);
+        const decodedToken = Buffer.from(decryptedToken, "base64").toString("utf-8");
         return decodedToken;
     }
     return null;
 }
-exports.default = { generateUrlToken, decryptUrlToken };
+exports.decryptUrlToken = decryptUrlToken;

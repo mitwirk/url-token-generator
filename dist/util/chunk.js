@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.chunk = void 0;
+exports.chunkIterator = void 0;
 const charByteCounter_1 = require("./charByteCounter");
-function* chunk(text, maxBytes) {
+function* chunkIterator(text, maxBytes) {
     let byteCounter = 0;
     let buildString = "";
     for (const char of text) {
@@ -18,4 +18,4 @@ function* chunk(text, maxBytes) {
     }
     yield buildString;
 }
-exports.chunk = chunk;
+exports.chunkIterator = chunkIterator;

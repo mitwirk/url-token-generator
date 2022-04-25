@@ -1,1 +1,1 @@
-export declare function chunk(text: string, maxBytes: number): IterableIterator<string>;
+export declare function chunkIterator(text: string, maxBytes: number): IterableIterator<string>;
