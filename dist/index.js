@@ -22,17 +22,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.decryptUrlToken = exports.generateUrlToken = void 0;
-const jsencrypt_1 = __importDefault(require("jsencrypt"));
 const chunk_1 = require("./util/chunk");
 const queryString = __importStar(require("query-string"));
 const MAX_CHUNK_BYTE = 200;
-function generateUrlToken(queryString, publicKeyFromPem) {
-    const jsencrypt = new jsencrypt_1.default();
+const generateUrlToken = (queryString, publicKeyFromPem) => __awaiter(void 0, void 0, void 0, function* () {
+    const JSEncrypt = (yield Promise.resolve().then(() => __importStar(require("jsencrypt")))).default;
+    const jsencrypt = new JSEncrypt();
     jsencrypt.setPublicKey(publicKeyFromPem);
     const base64EncodedQueryString = Buffer.from(queryString, "utf-8").toString("base64");
     let token = "token=";
@@ -40,15 +46,16 @@ function generateUrlToken(queryString, publicKeyFromPem) {
         token += `${jsencrypt.encrypt(s)},`;
     }
     return token.slice(0, -1);
-}
+});
 exports.generateUrlToken = generateUrlToken;
-function decryptUrlToken(tokenFromUrl, privateKeyFromPem) {
+const decryptUrlToken = (tokenFromUrl, privateKeyFromPem) => __awaiter(void 0, void 0, void 0, function* () {
     const parsedToken = queryString.parse(tokenFromUrl, {
         arrayFormat: "comma",
         decode: false,
     });
     if (parsedToken.token && Array.isArray(parsedToken.token)) {
-        const jsencrypt = new jsencrypt_1.default();
+        const JSEncrypt = (yield Promise.resolve().then(() => __importStar(require("jsencrypt")))).default;
+        const jsencrypt = new JSEncrypt();
         jsencrypt.setPrivateKey(privateKeyFromPem);
         let decryptedToken = "";
         for (const chunk of parsedToken.token) {
@@ -64,5 +71,5 @@ function decryptUrlToken(tokenFromUrl, privateKeyFromPem) {
         return decodedToken;
     }
     return null;
-}
+});
 exports.decryptUrlToken = decryptUrlToken;

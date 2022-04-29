@@ -1,10 +1,13 @@
-import JSEncrypt from "jsencrypt";
 import { chunkIterator } from "./util/chunk";
 import * as queryString from "query-string";
 
 const MAX_CHUNK_BYTE = 200;
 
-function generateUrlToken(queryString: string, publicKeyFromPem: string) {
+export const generateUrlToken = async (
+  queryString: string,
+  publicKeyFromPem: string
+): Promise<string> => {
+  const JSEncrypt = (await import("jsencrypt")).default;
   const jsencrypt = new JSEncrypt();
   jsencrypt.setPublicKey(publicKeyFromPem);
 
@@ -18,18 +21,19 @@ function generateUrlToken(queryString: string, publicKeyFromPem: string) {
   }
 
   return token.slice(0, -1);
-}
+};
 
-function decryptUrlToken(
+export const decryptUrlToken = async (
   tokenFromUrl: string,
   privateKeyFromPem: string
-): string | null {
+): Promise<string | null> => {
   const parsedToken = queryString.parse(tokenFromUrl, {
     arrayFormat: "comma",
     decode: false,
   });
 
   if (parsedToken.token && Array.isArray(parsedToken.token)) {
+    const JSEncrypt = (await import("jsencrypt")).default;
     const jsencrypt = new JSEncrypt();
     jsencrypt.setPrivateKey(privateKeyFromPem);
 
@@ -51,6 +55,4 @@ function decryptUrlToken(
   }
 
   return null;
-}
-
-export { generateUrlToken, decryptUrlToken };
+};

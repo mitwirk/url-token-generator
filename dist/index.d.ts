@@ -1,3 +1,2 @@
-declare function generateUrlToken(queryString: string, publicKeyFromPem: string): string;
-declare function decryptUrlToken(tokenFromUrl: string, privateKeyFromPem: string): string | null;
-export { generateUrlToken, decryptUrlToken };
+export declare const generateUrlToken: (queryString: string, publicKeyFromPem: string) => Promise<string>;
+export declare const decryptUrlToken: (tokenFromUrl: string, privateKeyFromPem: string) => Promise<string | null>;
