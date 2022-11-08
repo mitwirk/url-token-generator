@@ -1,6 +1,6 @@
 {
   "name": "url-token-generator",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Generates a Mitwirk compatible token for URL",
   "main": "index.js",
   "scripts": {

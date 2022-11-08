@@ -15,7 +15,7 @@ export const generateUrlToken = async (
     "base64"
   );
 
-  let token = "token=";
+  let token = "";
   for (const s of chunkIterator(base64EncodedQueryString, MAX_CHUNK_BYTE)) {
     token += `${jsencrypt.encrypt(s)},`;
   }
@@ -27,7 +27,7 @@ export const decryptUrlToken = async (
   tokenFromUrl: string,
   privateKeyFromPem: string
 ): Promise<string | null> => {
-  const parsedToken = queryString.parse(tokenFromUrl, {
+  const parsedToken = queryString.parse(`token=${tokenFromUrl}`, {
     arrayFormat: "comma",
     decode: false,
   });

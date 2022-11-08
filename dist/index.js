@@ -41,7 +41,7 @@ const generateUrlToken = (queryString, publicKeyFromPem) => __awaiter(void 0, vo
     const jsencrypt = new JSEncrypt();
     jsencrypt.setPublicKey(publicKeyFromPem);
     const base64EncodedQueryString = Buffer.from(queryString, "utf-8").toString("base64");
-    let token = "token=";
+    let token = "";
     for (const s of (0, chunk_1.chunkIterator)(base64EncodedQueryString, MAX_CHUNK_BYTE)) {
         token += `${jsencrypt.encrypt(s)},`;
     }
@@ -49,7 +49,7 @@ const generateUrlToken = (queryString, publicKeyFromPem) => __awaiter(void 0, vo
 });
 exports.generateUrlToken = generateUrlToken;
 const decryptUrlToken = (tokenFromUrl, privateKeyFromPem) => __awaiter(void 0, void 0, void 0, function* () {
-    const parsedToken = queryString.parse(tokenFromUrl, {
+    const parsedToken = queryString.parse(`token=${tokenFromUrl}`, {
         arrayFormat: "comma",
         decode: false,
     });

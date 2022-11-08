@@ -41,9 +41,20 @@ NwIDAQAB
 const TEST_QUERY_STRING =
   "?trafficSourceNumber=5000&trafficMediumNumber=1000&sessionId=098f6b4e83262&timestamp=1467708053&orderId=124578124578124578124578124578&orderValue=123232.25&orderCurrency=CHF&usedCouponCode=GETMEFREEHEHE&consumerSalutation=MRS&consumerFirstName=Balakrishnan&consumerLastName=Ranganathan&consumerEmail=balakrishnan.ranganathan@example.com&consumerCountry=Banglapore&consumerZipcode=434343443";
 
-test("expect chunked decrypted query to be same after encryption", () => {
-  const generatedToken = generateUrlToken(TEST_QUERY_STRING, TEST_PUBLIC_KEY);
-  const decryptedUrlToken = decryptUrlToken(generatedToken, TEST_PRIVATE_KEY);
+test("expect chunked decrypted query to be same after encryption", async () => {
+  const generatedToken = await generateUrlToken(
+    TEST_QUERY_STRING,
+    TEST_PUBLIC_KEY
+  );
+
+  console.log("generated token: ", generatedToken);
+
+  const decryptedUrlToken = await decryptUrlToken(
+    generatedToken,
+    TEST_PRIVATE_KEY
+  );
+
+  console.log("decrypted to: ", decryptedUrlToken);
 
   expect(TEST_QUERY_STRING).toBe(decryptedUrlToken);
 });
